@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "inquirer": "^8.1.2",
+    "jest": "^27.1.0",
+    "mysql2": "^2.3.0"
+  },
+  "name": "employee-tracker",
+  "description": "This challenge for Module 12 of the Coding Bootcamp is to create an app to track employees.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bjackels5/employee-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bjackels5/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/bjackels5/employee-tracker#readme"
+}
