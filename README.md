@@ -42,9 +42,8 @@ This challenge for Module 12 of the Coding Bootcamp is to create an app to track
         * The user is prompted to enter the name of the department and that department is added to the database
     * add a role
         * The user is prompted to enter the name, salary, and department for the role and that role is added to the database
-
     * add an employee
-        * The user is prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database
+        * The user is prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database. An employee is not required to have a manager.
     * update an employee role
         * The user is prompted to select an employee to update and their new role and this information is updated in the database
 * The database schema must follow this schema:
