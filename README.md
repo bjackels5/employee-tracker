@@ -34,17 +34,17 @@ This challenge for Module 12 of the Coding Bootcamp is to create an app to track
 * When the command line application starts up, the user is presented with the following options:
     * View all departments
         * The user is presented with a formatted table showing department names and department ids
-    * view all roles
+    * View all roles
         * The user is presented with the job title, role id, the department that role belongs to, and the salary for that role
-    * view all employees
+    * View all employees
         * The user is presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-    * add a department
+    * Add a department
         * The user is prompted to enter the name of the department and that department is added to the database
-    * add a role
+    * Add a role
         * The user is prompted to enter the name, salary, and department for the role and that role is added to the database
-    * add an employee
+    * Add an employee
         * The user is prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database. An employee is not required to have a manager.
-    * update an employee role
+    * Update an employee role
         * The user is prompted to select an employee to update and their new role and this information is updated in the database
 * The database schema must follow this schema:
 ![Employee Tracker Schema](./media/12-sql-homework-demo-02.png)
