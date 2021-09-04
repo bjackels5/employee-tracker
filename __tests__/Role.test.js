@@ -1,3 +1,4 @@
+const Department = require("../lib/Department.js");
 const Role = require("../lib/Role.js");
 const vc = require('../utils/validityChecks');
 
@@ -5,12 +6,12 @@ test('creates a Role object', () => {
     const role = new Role(  1,
                             "Engineer",
                             60000.52,
-                            2);
+                            new Department(1, "Department 1"));
 
     expect(role.getTitle()).toEqual(expect.any(String));
     expect(role.getId()).toEqual(expect.any(Number));
     expect(role.getSalary()).toEqual(expect.any(Number));
-    expect(role.getDeptId()).toEqual(expect.any(Number));
+    expect(role.getDepartment().getId()).toEqual(expect.any(Number));
 })
 
 test('checks if a roleId is a valid roleId', () => {
