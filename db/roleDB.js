@@ -16,17 +16,13 @@ const listAllRoles = db => {
     });
 }
 
-/*
-const addADepartment = (db, name) => {
-    let sql = `INSERT INTO departments (name) VALUES (?)`;
-    db.query(sql, name, (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message});
-            return;
-        }
-        console.log(`Department ${name} added`);
+const addARole = (db, title, salary, department_id) => {
+    let sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
+    let params = [title, salary, department_id];
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        console.log(`Role ${title} added`);
     });
 }
-*/
 
-module.exports = listAllRoles;
+module.exports = { listAllRoles, addARole };
