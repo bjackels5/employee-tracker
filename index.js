@@ -1,3 +1,7 @@
+const mysql = require('mysql2');
+const db = require('./db/connection');
+
+/*
 const menu = [
     {
         type: 'list',
@@ -12,3 +16,10 @@ const menu = [
         ]
     }
 ];
+*/
+
+// Start server after DB connection
+db.connect(err => {
+    if (err) throw err;
+    console.log('Database connected.');
+});    
