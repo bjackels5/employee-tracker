@@ -4,7 +4,7 @@ const figlet = require('figlet');
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment } = require('./db/departmentDB.js');
 const { listAllRoles, addARole } = require('./db/roleDB.js');
-const emps = require('./db/employeeDB.js');
+const empDB = require('./db/employeeDB.js');
 
 /*
 const menu = [
@@ -40,19 +40,21 @@ db.connect(err => {
     listAllRoles(db);
     addARole(db, "Junior Lab Assistant", 80000, 5);
     listAllRoles(db);
-    emps.listAllEmployees(db);
-    emps.listAllEmployeesByDepartment(db);
-    emps.listAllEmployeesByManager(db);
-    emps.listAllEmployeesByRole(db);
-    emps.addAnEmployee(db, "Jeanne", "Benoit", 9, 3);
-    emps.listAllEmployees(db);
-    emps.updateEmployeeRole(db, 5, 2);
-    emps.listAllEmployees(db);
-    emps.updateEmployeeManager(db, 5, 6);
-    emps.listAllEmployees(db);
+    empDB.listAllEmployees(db);
+    empDB.listAllEmployeesByDepartment(db);
+    empDB.listAllEmployeesByManager(db);
+    empDB.listAllEmployeesByRole(db);
+    empDB.addAnEmployee(db, "Jeanne", "Benoit", 9, 3);
+    empDB.listAllEmployees(db);
+    empDB.updateEmployeeRole(db, 5, 2);
+    empDB.listAllEmployees(db);
+    empDB.updateEmployeeManager(db, 5, 6);
+    empDB.listAllEmployees(db);
+    empDB.removeAnEmployee(db, 14);
     */
-   emps.removeAnEmployee(db, 14);
-   emps.listAllEmployees(db);
-
+   empDB.getEmployeeNamesAndIds(db)
+   .then(employees => {
+        console.log(employees);
+   })
 });
 

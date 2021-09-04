@@ -77,6 +77,16 @@ const removeAnEmployee = (db, employeeId) => {
     })
 }
 
+async function getEmployeeNamesAndIds(db) {
+    const sql = `SELECT CONCAT(first_name, ' ', last_name) AS name, id
+                FROM employees`
+    db.query(sql, (err, rows) => {
+        if (err) throw err;
+        return rows.slice();
+    });
+}
+
+
 module.exports = {
                     listAllEmployees,
                     listAllEmployeesByDepartment,
@@ -85,5 +95,6 @@ module.exports = {
                     addAnEmployee,
                     updateEmployeeRole,
                     updateEmployeeManager,
-                    removeAnEmployee
+                    removeAnEmployee,
+                    getEmployeeNamesAndIds
                  };
