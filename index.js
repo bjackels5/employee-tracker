@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment } = require('./db/departmentDB.js');
+const listAllRoles = require('./db/roleDB.js');
 
 /*
 const menu = [
@@ -25,5 +26,6 @@ db.connect(err => {
     listAllDepartments(db);
     addADepartment(db, "New Department");
     listAllDepartments(db);
+    listAllRoles(db);
 });
 
