@@ -2,8 +2,8 @@
 const figlet = require('figlet');
     
 const db = require('./db/connection');
-const { listAllDepartments, addADepartment } = require('./db/departmentDB.js');
-const { listAllRoles, addARole } = require('./db/roleDB.js');
+const { listAllDepartments, addADepartment, getDepartmentTitlesAndIds } = require('./db/departmentDB.js');
+const { listAllRoles, addARole, getRoleTitlesAndIds } = require('./db/roleDB.js');
 const empDB = require('./db/employeeDB.js');
 
 /*
@@ -56,6 +56,15 @@ db.connect(err => {
     .then(employees => {
         console.log(employees);
     })
+    getRoleTitlesAndIds(db)
+    .then(roles => {
+        console.log(roles);
+    })
+    getDepartmentTitlesAndIds(db)
+    .then(departments => {
+        console.log(departments);
+    })
+
 //    .catch(err => { console.log(err); });
 });
 

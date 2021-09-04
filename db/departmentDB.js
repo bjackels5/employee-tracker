@@ -16,4 +16,18 @@ const addADepartment = (db, name) => {
     });
 }
 
-module.exports = { listAllDepartments, addADepartment };
+const getDepartmentTitlesAndIds = db => {
+    const sql = `SELECT name, id FROM departments`
+    return new Promise(function (resolve, reject) {
+        db.query(sql, (err, rows) => {
+            if (rows === undefined || rows === null) {
+                reject(new Error("Error rows is undefined/null"));
+            } else {
+                resolve(rows);
+            }
+        });
+    });      
+}
+
+
+module.exports = { listAllDepartments, addADepartment, getDepartmentTitlesAndIds };
