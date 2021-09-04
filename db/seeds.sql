@@ -1,40 +1,40 @@
-INSERT INTO departments (id, name)
+INSERT INTO departments (name)
 VALUES
-    (1, "Management"),
-    (2, "Detectives"),
-    (3, "Forensics"),
-    (4, "Publicity");
+    ("Management"),
+    ("Detectives"),
+    ("Forensics"),
+    ("Publicity");
 
-INSERT INTO roles (id, title, salary, department_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES
-    (1, "Probationary Agent", 80000, 2),
-    (2, "Special Agent", 100000, 2),
-    (3, "Senior Special Agent", 120000, 2),
-    (4, "Medical Examiner", 120000, 3),
-    (5, "Assistant Medical Examiner", 83000, 3),
-    (6, "Lab Manager", 120000, 3),
-    (7, "Director", 150000, 1),
-    (8, "Publicity Manager", 75000, 4),
-    (9, "Publicity Assistant", 50000, 4),
-    (10, "Lab Assistant", 100000, 3);
+    ("Probationary Agent", 80000, 2),
+    ("Special Agent", 100000, 2),
+    ("Senior Special Agent", 120000, 2),
+    ("Medical Examiner", 120000, 3),
+    ("Assistant Medical Examiner", 83000, 3),
+    ("Lab Manager", 120000, 3),
+    ("Director", 150000, 1),
+    ("Publicity Manager", 75000, 4),
+    ("Publicity Assistant", 50000, 4),
+    ("Lab Assistant", 100000, 3);
 
--- Managers
-INSERT INTO employees (id, first_name, last_name, role_id)
+-- People with no manager
+INSERT INTO employees (first_name, last_name, role_id)
 VALUES
-    (1, "Leon", "Vance", 7),
-    (9, "Jenny", "Shepard", 7),
-    (12, "Delilah", "Fielding", 8);
+    ("Leon", "Vance", 7),
+    ("Jenny", "Shepard", 7),
+    ("Delilah", "Fielding", 8);
 
 -- The rest of the employees
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES
-    (2, "Leroy Jethro", "Gibbs", 3, 1),
-    (3, "Caitlin", "Todd", 1, 2),
-    (4, "Anthony", "DiNozzo", 2, 2),
-    (5, "Ducky", "Mallard", 4, 2), 
-    (6, "Abby", "Sciuto", 6, 1),
-    (7, "Timothy", "McGee", 2, 2),
-    (8, "Ziva", "David", 1, 2),
-    (10, "Jimmy", "Palmer", 5, 5),
-    (11, "Ellie", "Bishop", 1, 2),
-    (13, "Tobias", "Fornell", 9, 12);
+    ("Leroy Jethro", "Gibbs", 3, 1),
+    ("Caitlin", "Todd", 1, 4),
+    ("Anthony", "DiNozzo", 2, 4),
+    ("Ducky", "Mallard", 4, 4), 
+    ("Abby", "Sciuto", 6, 1),
+    ("Timothy", "McGee", 2, 4),
+    ("Ziva", "David", 1, 4),
+    ("Jimmy", "Palmer", 5, 7),
+    ("Ellie", "Bishop", 1, 4),
+    ("Tobias", "Fornell", 9, 3);

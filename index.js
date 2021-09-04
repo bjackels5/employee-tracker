@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const db = require('./db/connection');
+const { listAllDepartments, addADepartment } = require('./db/departmentDB.js');
 
 /*
 const menu = [
@@ -21,5 +22,8 @@ const menu = [
 // Start server after DB connection
 db.connect(err => {
     if (err) throw err;
-    console.log('Database connected.');
-});    
+    listAllDepartments(db);
+    addADepartment(db, "New Department");
+    listAllDepartments(db);
+});
+
