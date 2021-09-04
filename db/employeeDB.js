@@ -21,8 +21,8 @@ const sqlAllEmps = () => {
             `; 
 }
 
-const listAllEmployees = db => {
-    let sql = sqlAllEmps();
+const listAllEmployees = (db, sqlAdd = '') => {
+    let sql = sqlAllEmps() + sqlAdd;
 
     db.query(sql, (err, rows) => {
         if (err) throw err;
@@ -31,14 +31,12 @@ const listAllEmployees = db => {
 }
 
 const listAllEmployeesByDepartment = db => {
-    let sql = sqlAllEmps() +   ` ORDER BY roles.department_id`; 
-
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        logTable(rows);
-    });
+    listAllEmployees(db, ` ORDER BY roles.department_id`); 
 }
 
+const listAllEmployeesByManager = db => {
+    listAllEmployees(db, ` ORDER BY emp.manager_id`); 
+}
 
 const addAnEmployee = (db, title, salary, department_id) => {
     let sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
@@ -49,4 +47,4 @@ const addAnEmployee = (db, title, salary, department_id) => {
     });
 }
 
-module.exports = { listAllEmployees, addAnEmployee, listAllEmployeesByDepartment };
+module.exports = { listAllEmployees, addAnEmployee, listAllEmployeesByDepartment, listAllEmployeesByManager };
