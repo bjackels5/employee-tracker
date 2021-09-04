@@ -38,6 +38,10 @@ const listAllEmployeesByManager = db => {
     listAllEmployees(db, ` ORDER BY emp.manager_id`); 
 }
 
+const listAllEmployeesByRole = db => {
+    listAllEmployees(db, ` ORDER BY emp.role_id`); 
+}
+
 const addAnEmployee = (db, title, salary, department_id) => {
     let sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
     let params = [title, salary, department_id];
@@ -47,4 +51,9 @@ const addAnEmployee = (db, title, salary, department_id) => {
     });
 }
 
-module.exports = { listAllEmployees, addAnEmployee, listAllEmployeesByDepartment, listAllEmployeesByManager };
+module.exports = {
+                    listAllEmployees,
+                    listAllEmployeesByDepartment,
+                    listAllEmployeesByManager,
+                    listAllEmployeesByRole
+                 };

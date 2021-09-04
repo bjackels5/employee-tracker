@@ -44,5 +44,6 @@ db.connect(err => {
     emps.listAllEmployees(db);
     emps.listAllEmployeesByDepartment(db);
     emps.listAllEmployeesByManager(db);
+    emps.listAllEmployeesByRole(db);
 });
 
