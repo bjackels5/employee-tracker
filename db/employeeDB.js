@@ -22,7 +22,7 @@ const sqlAllEmps = () => {
 }
 
 const listAllEmployees = (db, sqlAdd = '') => {
-    let sql = sqlAllEmps() + sqlAdd;
+    const sql = sqlAllEmps() + sqlAdd;
 
     db.query(sql, (err, rows) => {
         if (err) throw err;
@@ -43,12 +43,38 @@ const listAllEmployeesByRole = db => {
 }
 
 const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {
-    let sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-    let params = [firstName, lastName, roleId, managerId];
+    const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+    const params = [firstName, lastName, roleId, managerId];
     db.query(sql, params, (err, rows) => {
         if (err) throw err;
         logMessage(`Employee ${firstName} ${lastName} added`);
     });
+}
+
+const updateEmployeeRole = (db, employeeId, newRoleId) => {
+    const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
+    const params = [newRoleId, employeeId];
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        logMessage(`Role update to ${newRoleId} for Employee with id ${employeeId}`);
+    });
+}
+
+const updateEmployeeManager = (db, employeeId, newManagerId) => {
+    const sql = `UPDATE employees SET manager_id = ? WHERE id = ?`;
+    params = [newManagerId, employeeId];
+    db.query(sql, params, (err, rows) => {
+        if (err) throw err;
+        logMessage(`Manager id update to ${newManagerId} for Employee with id ${employeeId}`);
+    });
+}
+
+const removeAnEmployee = (db, employeeId) => {
+    const sql = `DELETE FROM employees WHERE id=?`;
+    db.query(sql, employeeId, (err, rows) => {
+        if (err) throw err;
+        logMessage(`Employee with id ${employeeId} has been deleted`);
+    })
 }
 
 module.exports = {
@@ -56,5 +82,8 @@ module.exports = {
                     listAllEmployeesByDepartment,
                     listAllEmployeesByManager,
                     listAllEmployeesByRole,
-                    addAnEmployee
+                    addAnEmployee,
+                    updateEmployeeRole,
+                    updateEmployeeManager,
+                    removeAnEmployee
                  };

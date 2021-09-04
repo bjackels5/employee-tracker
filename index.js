@@ -40,12 +40,19 @@ db.connect(err => {
     listAllRoles(db);
     addARole(db, "Junior Lab Assistant", 80000, 5);
     listAllRoles(db);
-    */
     emps.listAllEmployees(db);
     emps.listAllEmployeesByDepartment(db);
     emps.listAllEmployeesByManager(db);
     emps.listAllEmployeesByRole(db);
     emps.addAnEmployee(db, "Jeanne", "Benoit", 9, 3);
     emps.listAllEmployees(db);
+    emps.updateEmployeeRole(db, 5, 2);
+    emps.listAllEmployees(db);
+    emps.updateEmployeeManager(db, 5, 6);
+    emps.listAllEmployees(db);
+    */
+   emps.removeAnEmployee(db, 14);
+   emps.listAllEmployees(db);
+
 });
 
