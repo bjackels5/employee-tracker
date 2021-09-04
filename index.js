@@ -52,9 +52,10 @@ db.connect(err => {
     empDB.listAllEmployees(db);
     empDB.removeAnEmployee(db, 14);
     */
-   empDB.getEmployeeNamesAndIds(db)
-   .then(employees => {
+    empDB.getEmployeeNamesAndIds(db)
+    .then(employees => {
         console.log(employees);
-   })
+    })
+//    .catch(err => { console.log(err); });
 });
 

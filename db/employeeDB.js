@@ -18,7 +18,7 @@ const sqlAllEmps = () => {
             ON roles.department_id = departments.id
             LEFT JOIN employees mgr
             ON emp.manager_id = mgr.id
-            `; 
+            `;
 }
 
 const listAllEmployees = (db, sqlAdd = '') => {
@@ -31,15 +31,15 @@ const listAllEmployees = (db, sqlAdd = '') => {
 }
 
 const listAllEmployeesByDepartment = db => {
-    listAllEmployees(db, ` ORDER BY roles.department_id`); 
+    listAllEmployees(db, ` ORDER BY roles.department_id`);
 }
 
 const listAllEmployeesByManager = db => {
-    listAllEmployees(db, ` ORDER BY emp.manager_id`); 
+    listAllEmployees(db, ` ORDER BY emp.manager_id`);
 }
 
 const listAllEmployeesByRole = db => {
-    listAllEmployees(db, ` ORDER BY emp.role_id`); 
+    listAllEmployees(db, ` ORDER BY emp.role_id`);
 }
 
 const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {
@@ -77,24 +77,27 @@ const removeAnEmployee = (db, employeeId) => {
     })
 }
 
-async function getEmployeeNamesAndIds(db) {
-    const sql = `SELECT CONCAT(first_name, ' ', last_name) AS name, id
-                FROM employees`
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        return rows.slice();
-    });
+const getEmployeeNamesAndIds = db => {
+    const sql = `SELECT CONCAT(first_name, ' ', last_name) AS name, id FROM employees`
+    return new Promise(function (resolve, reject) {
+        db.query(sql, (err, rows) => {
+            if (rows === undefined || rows === null) {
+                reject(new Error("Error rows is undefined/null"));
+            } else {
+                resolve(rows);
+            }
+        });
+    });      
 }
 
-
 module.exports = {
-                    listAllEmployees,
-                    listAllEmployeesByDepartment,
-                    listAllEmployeesByManager,
-                    listAllEmployeesByRole,
-                    addAnEmployee,
-                    updateEmployeeRole,
-                    updateEmployeeManager,
-                    removeAnEmployee,
-                    getEmployeeNamesAndIds
-                 };
+    listAllEmployees,
+    listAllEmployeesByDepartment,
+    listAllEmployeesByManager,
+    listAllEmployeesByRole,
+    addAnEmployee,
+    updateEmployeeRole,
+    updateEmployeeManager,
+    removeAnEmployee,
+    getEmployeeNamesAndIds
+};
