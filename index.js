@@ -4,6 +4,7 @@ const figlet = require('figlet');
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment } = require('./db/departmentDB.js');
 const { listAllRoles, addARole } = require('./db/roleDB.js');
+const emps = require('./db/employeeDB.js');
 
 /*
 const menu = [
@@ -40,5 +41,7 @@ db.connect(err => {
     addARole(db, "Junior Lab Assistant", 80000, 5);
     listAllRoles(db);
     */
+    emps.listAllEmployees(db);
+    emps.listAllEmployeesByDepartment(db);
 });
 

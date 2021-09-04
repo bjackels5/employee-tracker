@@ -1,4 +1,4 @@
-const cTable = require('console.table');
+const { logTable, logMessage } = require('../utils/logUtils.js');
 
 const listAllRoles = db => {
 
@@ -10,9 +10,7 @@ const listAllRoles = db => {
                 ON roles.department_id = departments.id`;
     db.query(sql, (err, rows) => {
         if (err) throw err;
-        console.log('-----------------')
-        console.table(rows);
-        console.log('-----------------')
+        logTable(rows);
     });
 }
 
@@ -21,7 +19,7 @@ const addARole = (db, title, salary, department_id) => {
     let params = [title, salary, department_id];
     db.query(sql, params, (err, rows) => {
         if (err) throw err;
-        console.log(`Role ${title} added`);
+        logMessage(`Role ${title} added`);
     });
 }
 
