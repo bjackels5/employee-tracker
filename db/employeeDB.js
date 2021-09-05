@@ -59,7 +59,7 @@ const updateEmployeeRole = (db, employeeId, newRoleId) => {
     const params = [newRoleId, employeeId];
     db.query(sql, params, (err, rows) => {
         if (err) throw err;
-        logMessage(`Role update to ${newRoleId} for Employee with id ${employeeId}`);
+        // logMessage(`Role update to ${newRoleId} for Employee with id ${employeeId}`);
     });
 }
 
@@ -81,7 +81,7 @@ const removeAnEmployee = (db, employeeId) => {
 }
 
 const getEmployeeNamesAndIds = db => {
-    const sql = `SELECT CONCAT(first_name, ' ', last_name) AS name, id FROM employees`
+    const sql = `SELECT CONCAT(first_name, ' ', last_name) AS name, id AS value FROM employees`
     return runSql(db, sql);
 }
 

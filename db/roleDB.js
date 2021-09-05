@@ -27,16 +27,8 @@ const addARole = (db, title, salary, department_id) => {
 }
 
 const getRoleTitlesAndIds = db => {
-    const sql = `SELECT title, id FROM roles`
-    return new Promise(function (resolve, reject) {
-        db.query(sql, (err, rows) => {
-            if (rows === undefined || rows === null) {
-                reject(new Error("Error rows is undefined/null"));
-            } else {
-                resolve(rows);
-            }
-        });
-    });      
+    const sql = `SELECT title AS name, id AS value FROM roles`
+    return runSql(db, sql);
 }
 
 module.exports = { listAllRoles, addARole, getRoleTitlesAndIds };

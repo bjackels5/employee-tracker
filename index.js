@@ -1,3 +1,18 @@
+// Can I use this to show what just happened at the bottom of the screen? "Employee added", e.g.
+// var ui = new inquirer.ui.BottomBar();
+//
+// // pipe a Stream to the log zone
+// outputStream.pipe(ui.log);
+//
+// // Or simply write output
+// ui.log.write('something just happened.');
+// ui.log.write('Almost over, standby!');
+//
+// // During processing, update the bottom bar content to display a loader
+// // or output a progress bar, etc
+// ui.updateBottomBar('new bottom bar content');
+
+
 // const mysql = require('mysql2');
 const figlet = require('figlet');
 const inquirer = require('inquirer');
@@ -41,6 +56,7 @@ const whatNext = [
             cVwEmpsRole,
             cVwEmpsMgr,
             cAddEmp,
+            cUpEmpRole,
             cVwDepts,
             cAddDept,
             cVwRoles,
@@ -87,29 +103,68 @@ const whatNext = [
 
 ];
 
+const promptForEmpAndRole = () => {
+    return new Promise(function (resolve, reject) {
+        empDB.getEmployeeNamesAndIds(db)
+            .then(employees => {
+                const whichEmp = [
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: `Whose role do you want to modify?`,
+                        choices: employees
+                    }
+                ];
+
+                inquirer.prompt(whichEmp)
+                    .then(empAnswer => {
+                        // the employee has been chosen, now the role has to be chosen
+                        empName = employees.filter(emp => emp.value === empAnswer.employee)[0].name;
+                        getRoleTitlesAndIds(db)
+                            .then(roles => {
+                                const whichRole = [
+                                    {
+                                        type: 'list',
+                                        name: 'role',
+                                        message: `What is ${empName}'s new role?`,
+                                        choices: roles
+                                    }
+                                ];
+                                inquirer.prompt(whichRole)
+                                    .then(roleAnswer => {
+                                        // the employee and the role have both been chosen
+                                        empDB.updateEmployeeRole(db, empAnswer.employee, roleAnswer.role);
+                                        resolve("Employee Role Updated");
+                                    });
+                            });
+                    });
+            });
+    });
+}
+
 const promptForDept = (roleTitle, roleSalary) => {
     return new Promise(function (resolve, reject) {
         getDepartmentNamesAndIds(db)
-        .then(departments => {
-            // console.log(departments);
-            const whichDept = [
-                {
-                    type: 'list',
-                    name: 'dept',
-                    message: `To which department does the role ${roleTitle} belong?`,
-                    choices: departments
-                }
-            ];    
-        
-            inquirer.prompt(whichDept)
-                .then(answer => {
-                    /* now that we have the role title and the department id, create the new role */
-                    addARole(db, roleTitle, roleSalary, answer.dept);
-                    resolve("all is good");
-                })
-        });
+            .then(departments => {
+                const whichDept = [
+                    {
+                        type: 'list',
+                        name: 'dept',
+                        message: `To which department does the role ${roleTitle} belong?`,
+                        choices: departments
+                    }
+                ];
+
+                inquirer.prompt(whichDept)
+                    .then(answer => {
+                        /* now that we have the role title and the department id, create the new role */
+                        addARole(db, roleTitle, roleSalary, answer.dept);
+                        resolve(`Role ${roleTitle} Created`);
+                    })
+            });
     });
 }
+
 
 const promptUser = (db) => {
     return inquirer.prompt(whatNext)
@@ -141,12 +196,17 @@ const promptUser = (db) => {
                         })
                     break;
                 case cAddEmp:
-                    console.log(`first name is ${answer.firstName}`);
                     return promptUser(db);
                     // empDB.addAnEmployee(db, "Jeanne", "Benoit", 9, 3)
                     // .then( () => {
                     //     return promptUser(db);
                     // })
+                    break;
+                case cUpEmpRole:
+                    promptForEmpAndRole()
+                        .then(() => {
+                            return promptUser(db);
+                        });
                     break;
                 case cVwDepts:
                     listAllDepartments(db)
