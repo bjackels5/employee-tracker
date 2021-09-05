@@ -57,6 +57,7 @@ const whatNext = [
             cVwEmpsMgr,
             cAddEmp,
             cUpEmpRole,
+            cUpEmpMgr,
             cVwDepts,
             cAddDept,
             cVwRoles,
@@ -67,7 +68,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'firstName',
-        message: "What is the employee's name?",
+        message: "Please enter the employee's first name:",
         validate: theInput => validateInput(theInput, "The employee's first name is required."),
         when(answers) {
             return (answers.whatNext === cAddEmp);
@@ -75,8 +76,17 @@ const whatNext = [
     },
     {
         type: 'input',
+        name: 'lastName',
+        message: "Please enter the employee's last name:",
+        validate: theInput => validateInput(theInput, "The employee's last name is required."),
+        when(answers) {
+            return (answers.whatNext === cAddEmp);
+        },
+    },
+    {
+        type: 'input',
         name: 'deptName',
-        message: 'What is the name of the department?',
+        message: 'Please enter the name of the department:',
         validate: theInput => validateInput(theInput, "The department name is required."),
         when(answers) {
             return (answers.whatNext === cAddDept);
@@ -85,7 +95,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'roleTitle',
-        message: 'What is the title of the role?',
+        message: 'Please enter the title of the role:',
         validate: theInput => validateInput(theInput, "The role title is required."),
         when(answers) {
             return (answers.whatNext === cAddRole);
@@ -94,7 +104,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'roleSalary',
-        message: 'What is the salary of the role?',
+        message: "Please enter the role's salary",
         validate: theInput => validateInput(theInput, "The role salary is required."),
         when(answers) {
             return (answers.whatNext === cAddRole);
@@ -103,7 +113,47 @@ const whatNext = [
 
 ];
 
-const promptForEmpAndRole = () => {
+
+const promptAddEmployee = (firstName, lastName) => {
+    return new Promise(function (resolve, reject) {
+        getRoleTitlesAndIds(db)
+            .then(roles => {
+                const whichRole = [
+                    {
+                        type: 'list',
+                        name: 'role',
+                        message: `Please select a role for the employee:`,
+                        choices: roles
+                    }
+                ];
+
+                inquirer.prompt(whichRole)
+                    .then(roleAnswer => {
+                        // the employee role has been chosen, now the manager has to be chosen
+                        empDB.getEmployeeNamesAndIds(db)
+                            .then(managers => {
+                                const whichManager = [
+                                    {
+                                        type: 'list',
+                                        name: 'manager',
+                                        message: `Please select a manager for the employee:`,
+                                        choices: managers
+                                    }
+                                ];
+                                inquirer.prompt(whichManager)
+                                    .then(managerAnswer => {
+                                        // the role and the manager have both been chosen
+                                        empDB.addAnEmployee(db, firstName, lastName, roleAnswer.role, managerAnswer.manager);
+                                        resolve("Employee Added");
+                                    });
+                            });
+                    });
+            });
+    });
+}
+
+
+const promptUpdateEmployeeRole = () => {
     return new Promise(function (resolve, reject) {
         empDB.getEmployeeNamesAndIds(db)
             .then(employees => {
@@ -111,7 +161,7 @@ const promptForEmpAndRole = () => {
                     {
                         type: 'list',
                         name: 'employee',
-                        message: `Whose role do you want to modify?`,
+                        message: `Please select the employee to modify:`,
                         choices: employees
                     }
                 ];
@@ -119,14 +169,14 @@ const promptForEmpAndRole = () => {
                 inquirer.prompt(whichEmp)
                     .then(empAnswer => {
                         // the employee has been chosen, now the role has to be chosen
-                        empName = employees.filter(emp => emp.value === empAnswer.employee)[0].name;
+                        // empName = employees.filter(emp => emp.value === empAnswer.employee)[0].name;
                         getRoleTitlesAndIds(db)
                             .then(roles => {
                                 const whichRole = [
                                     {
                                         type: 'list',
                                         name: 'role',
-                                        message: `What is ${empName}'s new role?`,
+                                        message: `Please select the employee's new role:`,
                                         choices: roles
                                     }
                                 ];
@@ -142,7 +192,42 @@ const promptForEmpAndRole = () => {
     });
 }
 
-const promptForDept = (roleTitle, roleSalary) => {
+
+const promptUpdateEmployeeManager = () => {
+    return new Promise(function (resolve, reject) {
+        empDB.getEmployeeNamesAndIds(db)
+            .then(employees => {
+                const whichEmpAndMgr = [
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: `Please select the employee who has a new manager:`,
+                        choices: employees
+                    },
+                    {
+                        type: 'list',
+                        name: 'manager',
+                        // I would like to have this question say `"Who is ${name}'s new manager?`, but then I'd have to do nested prompts.
+                        message: `Please select the employee's new manager:`,
+                        // I would like to remove the selected employee from the list, but then I'd have to do nested prompts.
+                        choices: employees
+                    }
+                ];
+
+                inquirer.prompt(whichEmpAndMgr)
+                    .then(answer => {
+                        // the employee and manager have been chosen
+                        empName = employees.filter(emp => emp.value === answer.employee)[0].name;
+                        mgrName = employees.filter(emp => emp.value === answer.manager)[0].name;
+                        empDB.updateEmployeeManager(db, answer.employee, answer.manager);
+                        resolve("Employee Manager Updated");
+                    });
+            });
+    });
+}
+
+
+const promptAddRole = (roleTitle, roleSalary) => {
     return new Promise(function (resolve, reject) {
         getDepartmentNamesAndIds(db)
             .then(departments => {
@@ -150,7 +235,7 @@ const promptForDept = (roleTitle, roleSalary) => {
                     {
                         type: 'list',
                         name: 'dept',
-                        message: `To which department does the role ${roleTitle} belong?`,
+                        message: `Please select a department for the role:`,
                         choices: departments
                     }
                 ];
@@ -166,70 +251,75 @@ const promptForDept = (roleTitle, roleSalary) => {
 }
 
 
-const promptUser = (db) => {
+const promptUser = () => {
     return inquirer.prompt(whatNext)
         .then(answer => {
             switch (answer.whatNext) {
                 case cVwEmps:
                     empDB.listAllEmployees(db)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         })
 
                     break;
                 case cVwEmpsDept:
                     empDB.listAllEmployeesByDepartment(db)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         })
                     break;
                 case cVwEmpsRole:
                     empDB.listAllEmployeesByRole(db)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         })
                     break;
                 case cVwEmpsMgr:
                     empDB.listAllEmployeesByManager(db)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         })
                     break;
                 case cAddEmp:
-                    return promptUser(db);
-                    // empDB.addAnEmployee(db, "Jeanne", "Benoit", 9, 3)
-                    // .then( () => {
-                    //     return promptUser(db);
-                    // })
+                    promptAddEmployee(answer.firstName, answer.lastName)
+                    .then( () => {
+                        return promptUser();
+                    });
                     break;
                 case cUpEmpRole:
-                    promptForEmpAndRole()
+                    promptUpdateEmployeeRole()
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
+                        });
+                    break;
+                case cUpEmpMgr:
+                    promptUpdateEmployeeManager()
+                        .then(() => {
+                            return promptUser();
                         });
                     break;
                 case cVwDepts:
                     listAllDepartments(db)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         });
                     break;
                 case cAddDept:
                     addADepartment(db, answer.deptName)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         });
                     break;
                 case cVwRoles:
                     listAllRoles(db)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         });
                     break;
                 case cAddRole:
-                    promptForDept(answer.roleTitle, answer.roleSalary)
+                    promptAddRole(answer.roleTitle, answer.roleSalary)
                         .then(() => {
-                            return promptUser(db);
+                            return promptUser();
                         });
                     break;
                 default:
@@ -243,59 +333,13 @@ const promptUser = (db) => {
 db.connect(err => {
     if (err) throw err;
     console.log(figlet.textSync('Employee\n       Tracker', { horizontalLayout: 'fitted', verticalLayout: 'fitted' }));
-    promptUser(db)
-        .then(db => {
+    promptUser()
+        .then( () => {
             // console.log("how do I exit out?");
             // db.close();
         })
         .catch(err => {
             console.log(err);
         });
-
-    // works 20210904 1748
-    // empDB.listAllEmployees(db)
-    // .then( () => {
-    //     // console.log(employees);
-    //     console.log('employees displayed');
-    // })
-
-
-    /*
-    listAllDepartments(db);
-    addADepartment(db, "New Department");
-    listAllDepartments(db);
-    listAllRoles(db);
-    addARole(db, "Junior Lab Assistant", 80000, 5);
-    listAllRoles(db);
-    empDB.listAllEmployees(db);
-    empDB.listAllEmployeesByDepartment(db);
-    empDB.listAllEmployeesByManager(db);
-    empDB.listAllEmployeesByRole(db);
-    empDB.addAnEmployee(db, "Jeanne", "Benoit", 9, 3);
-    empDB.listAllEmployees(db);
-    empDB.updateEmployeeRole(db, 5, 2);
-    empDB.listAllEmployees(db);
-    empDB.updateEmployeeManager(db, 5, 6);
-    empDB.listAllEmployees(db);
-    empDB.removeAnEmployee(db, 14);
-    */
-    //    empDB.getEmployeeNamesAndIds(db)
-    //    .then(employees => {
-    //        console.log(employees);
-    //    })
-    /*
-    getRoleTitlesAndIds(db)
-    .then(roles => {
-        console.log(roles);
-    })
-    */
-    //  getDepartmentNamesAndIds(db)
-    //  .then(departments => {
-    //      console.log(departments);
-    //  })
-
-    //    db.close(); call this when user chooses to exit
-
-    //    .catch(err => { console.log(err); });
 });
 

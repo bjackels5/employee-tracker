@@ -50,7 +50,7 @@ const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {
     // NEW FORMAT NOT YET TESTED!
     return runSql(db, sql, params)
     .then( () => {
-        logMessage(`Employee ${firstName} ${lastName} added`);
+        // logMessage(`Employee ${firstName} ${lastName} added`);
     })
 }
 
@@ -68,7 +68,7 @@ const updateEmployeeManager = (db, employeeId, newManagerId) => {
     params = [newManagerId, employeeId];
     db.query(sql, params, (err, rows) => {
         if (err) throw err;
-        logMessage(`Manager id update to ${newManagerId} for Employee with id ${employeeId}`);
+        // logMessage(`Manager id update to ${newManagerId} for Employee with id ${employeeId}`);
     });
 }
 
