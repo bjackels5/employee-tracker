@@ -1,5 +1,6 @@
 // Can I use this to show what just happened at the bottom of the screen? "Employee added", e.g.
 // var ui = new inquirer.ui.BottomBar();
+// ui.log.write('something just happened.');
 //
 // // pipe a Stream to the log zone
 // outputStream.pipe(ui.log);
@@ -16,6 +17,7 @@
 // const mysql = require('mysql2');
 const figlet = require('figlet');
 const inquirer = require('inquirer');
+const ui = new inquirer.ui.BottomBar();
 
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment, getDepartmentNamesAndIds } = require('./db/departmentDB.js');
@@ -258,6 +260,7 @@ const promptUser = () => {
                 case cVwEmps:
                     empDB.listAllEmployees(db)
                         .then(() => {
+                            ui.log.write('All employees have been listed.');
                             return promptUser();
                         })
 
@@ -265,62 +268,76 @@ const promptUser = () => {
                 case cVwEmpsDept:
                     empDB.listAllEmployeesByDepartment(db)
                         .then(() => {
+                            ui.log.write('All employees have been listed by department.');
                             return promptUser();
                         })
                     break;
                 case cVwEmpsRole:
                     empDB.listAllEmployeesByRole(db)
                         .then(() => {
+                            ui.log.write('All employees have been listed by role.');
                             return promptUser();
                         })
                     break;
                 case cVwEmpsMgr:
                     empDB.listAllEmployeesByManager(db)
                         .then(() => {
+                            ui.log.write('All employees have been listed by manager.');
                             return promptUser();
                         })
                     break;
                 case cAddEmp:
                     promptAddEmployee(answer.firstName, answer.lastName)
-                    .then( () => {
-                        return promptUser();
-                    });
+                        .then(() => {
+                            ui.log.write('An employee has been added.');
+                            return promptUser();
+                        });
                     break;
                 case cUpEmpRole:
                     promptUpdateEmployeeRole()
                         .then(() => {
+                            ui.log.write("An employee's role has been updated.");
                             return promptUser();
                         });
                     break;
                 case cUpEmpMgr:
                     promptUpdateEmployeeManager()
                         .then(() => {
+                            ui.log.write("An employee's manager has been updated.");
                             return promptUser();
                         });
                     break;
                 case cVwDepts:
                     listAllDepartments(db)
                         .then(() => {
+                            ui.log.write("All departments have been listed.");
                             return promptUser();
                         });
                     break;
                 case cAddDept:
                     addADepartment(db, answer.deptName)
                         .then(() => {
+                            ui.log.write("A department has been added.");
                             return promptUser();
                         });
                     break;
                 case cVwRoles:
                     listAllRoles(db)
                         .then(() => {
+                            ui.log.write("All roles have been listed.");
                             return promptUser();
                         });
                     break;
                 case cAddRole:
                     promptAddRole(answer.roleTitle, answer.roleSalary)
                         .then(() => {
+                            ui.log.write("A roles has been added.");
                             return promptUser();
                         });
+                    break;
+                case cExit:
+                    ui.log.write("Thank you for using Employee Tracker. Have a great day!");
+                    return; // db.close();
                     break;
                 default:
                     return db;
@@ -328,18 +345,14 @@ const promptUser = () => {
         });
 };
 
-
-// Start server after DB connection
 db.connect(err => {
     if (err) throw err;
     console.log(figlet.textSync('Employee\n       Tracker', { horizontalLayout: 'fitted', verticalLayout: 'fitted' }));
     promptUser()
-        .then( () => {
-            // console.log("how do I exit out?");
-            // db.close();
+        .then(() => {
+            console.log("how do I exit out?");
         })
         .catch(err => {
             console.log(err);
         });
 });
-
