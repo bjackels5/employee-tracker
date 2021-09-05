@@ -1,33 +1,32 @@
 const { logTable, logMessage } = require('../utils/logUtils.js');
+const runSql = require('./dbutils.js');
 
 const listAllDepartments = db => {
     let sql = `SELECT name AS Departments FROM departments`;
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        logTable(rows);
-    });
+
+    return runSql(db, sql)
+    .then(departments => {
+        logTable(departments);
+    })
 }
 
 const addADepartment = (db, name) => {
     let sql = `INSERT INTO departments (name) VALUES (?)`;
-    db.query(sql, name, (err, rows) => {
-        if (err) throw err;
+    return runSql(db, sql, name)
+    .then( () => {
         logMessage(`Department ${name} added`);
-    });
+    })
 }
 
-const getDepartmentTitlesAndIds = db => {
-    const sql = `SELECT name, id FROM departments`
-    return new Promise(function (resolve, reject) {
-        db.query(sql, (err, rows) => {
-            if (rows === undefined || rows === null) {
-                reject(new Error("Error rows is undefined/null"));
-            } else {
-                resolve(rows);
-            }
-        });
-    });      
+const getDepartmentNamesAndIds = (db) => {
+    console.log('get dept names and ids');
+    const sql = `SELECT name, id AS value FROM departments`
+    return runSql(db, sql);
+    // .then( () => {
+    //     console.log('returning dept names and ids');
+    //     // do nothing
+    // });
 }
 
 
-module.exports = { listAllDepartments, addADepartment, getDepartmentTitlesAndIds };
+module.exports = { listAllDepartments, addADepartment, getDepartmentNamesAndIds };

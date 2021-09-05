@@ -1,4 +1,5 @@
 const { logTable, logMessage } = require('../utils/logUtils.js');
+const runSql = require('./dbutils.js');
 
 const listAllRoles = db => {
 
@@ -8,19 +9,21 @@ const listAllRoles = db => {
                 FROM roles
                 JOIN departments
                 ON roles.department_id = departments.id`;
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        logTable(rows);
+
+    return runSql(db, sql)
+    .then(roles => {
+        logTable(roles);
     });
 }
 
 const addARole = (db, title, salary, department_id) => {
     let sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`;
     let params = [title, salary, department_id];
-    db.query(sql, params, (err, rows) => {
-        if (err) throw err;
-        logMessage(`Role ${title} added`);
-    });
+
+    return runSql(db, sql, params);
+    // .then( () => {
+    //     logMessage(`Role ${title} added`);
+    // });
 }
 
 const getRoleTitlesAndIds = db => {

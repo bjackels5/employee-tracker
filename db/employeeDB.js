@@ -1,4 +1,5 @@
 const { logTable, logMessage } = require('../utils/logUtils.js');
+const runSql = require('./dbutils.js');
 
 const sqlAllEmps = () => {
     return `SELECT  CONCAT(emp.first_name, ' ', emp.last_name) AS Name,
@@ -24,31 +25,33 @@ const sqlAllEmps = () => {
 const listAllEmployees = (db, sqlAdd = '') => {
     const sql = sqlAllEmps() + sqlAdd;
 
-    db.query(sql, (err, rows) => {
-        if (err) throw err;
-        logTable(rows);
-    });
+    return runSql(db, sql)
+    .then(employees => {
+        logTable(employees);
+    })
 }
 
 const listAllEmployeesByDepartment = db => {
-    listAllEmployees(db, ` ORDER BY roles.department_id`);
+    return listAllEmployees(db, ` ORDER BY roles.department_id`);
 }
 
 const listAllEmployeesByManager = db => {
-    listAllEmployees(db, ` ORDER BY emp.manager_id`);
+    return listAllEmployees(db, ` ORDER BY emp.manager_id`);
 }
 
 const listAllEmployeesByRole = db => {
-    listAllEmployees(db, ` ORDER BY emp.role_id`);
+    return listAllEmployees(db, ` ORDER BY emp.role_id`);
 }
 
 const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {
     const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
     const params = [firstName, lastName, roleId, managerId];
-    db.query(sql, params, (err, rows) => {
-        if (err) throw err;
+
+    // NEW FORMAT NOT YET TESTED!
+    return runSql(db, sql, params)
+    .then( () => {
         logMessage(`Employee ${firstName} ${lastName} added`);
-    });
+    })
 }
 
 const updateEmployeeRole = (db, employeeId, newRoleId) => {
@@ -79,15 +82,7 @@ const removeAnEmployee = (db, employeeId) => {
 
 const getEmployeeNamesAndIds = db => {
     const sql = `SELECT CONCAT(first_name, ' ', last_name) AS name, id FROM employees`
-    return new Promise(function (resolve, reject) {
-        db.query(sql, (err, rows) => {
-            if (rows === undefined || rows === null) {
-                reject(new Error("Error rows is undefined/null"));
-            } else {
-                resolve(rows);
-            }
-        });
-    });      
+    return runSql(db, sql);
 }
 
 module.exports = {
