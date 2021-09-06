@@ -21,9 +21,6 @@ const addARole = (db, title, salary, department_id) => {
     let params = [title, salary, department_id];
 
     return runSql(db, sql, params);
-    // .then( () => {
-    //     logMessage(`Role ${title} added`);
-    // });
 }
 
 const getRoleTitlesAndIds = db => {

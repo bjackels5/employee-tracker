@@ -12,14 +12,13 @@ const listAllDepartments = db => {
 
 const addADepartment = (db, name) => {
     let sql = `INSERT INTO departments (name) VALUES (?)`;
-    return runSql(db, sql, name)
-    .then( () => {
-        logMessage(`Department ${name} added`);
-    })
+    return runSql(db, sql, name);
+    // .then( () => {
+    //     logMessage(`Department ${name} added`);
+    // })
 }
 
 const getDepartmentNamesAndIds = (db) => {
-    console.log('get dept names and ids');
     const sql = `SELECT name, id AS value FROM departments`
     return runSql(db, sql);
     // .then( () => {

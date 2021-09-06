@@ -1,4 +1,4 @@
-const { logTable, logMessage } = require('../utils/logUtils.js');
+const { logTable } = require('../utils/logUtils.js');
 const runSql = require('./dbutils.js');
 
 const sqlAllEmps = () => {
@@ -47,11 +47,7 @@ const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {
     const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
     const params = [firstName, lastName, roleId, managerId];
 
-    // NEW FORMAT NOT YET TESTED!
-    return runSql(db, sql, params)
-    .then( () => {
-        // logMessage(`Employee ${firstName} ${lastName} added`);
-    })
+    return runSql(db, sql, params);
 }
 
 const updateEmployeeRole = (db, employeeId, newRoleId) => {
@@ -59,7 +55,6 @@ const updateEmployeeRole = (db, employeeId, newRoleId) => {
     const params = [newRoleId, employeeId];
     db.query(sql, params, (err, rows) => {
         if (err) throw err;
-        // logMessage(`Role update to ${newRoleId} for Employee with id ${employeeId}`);
     });
 }
 
@@ -68,7 +63,6 @@ const updateEmployeeManager = (db, employeeId, newManagerId) => {
     params = [newManagerId, employeeId];
     db.query(sql, params, (err, rows) => {
         if (err) throw err;
-        // logMessage(`Manager id update to ${newManagerId} for Employee with id ${employeeId}`);
     });
 }
 
@@ -76,7 +70,6 @@ const removeAnEmployee = (db, employeeId) => {
     const sql = `DELETE FROM employees WHERE id=?`;
     db.query(sql, employeeId, (err, rows) => {
         if (err) throw err;
-        logMessage(`Employee with id ${employeeId} has been deleted`);
     })
 }
 

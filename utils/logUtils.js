@@ -8,10 +8,7 @@ const logTable = rows => {
 };
 
 const logMessage = msg => {
-    const separator = '===================';
-    console.log(separator);
-    console.log(msg);
-    console.log(separator);
+    console.log('==== ', msg, ' ====');
 }
 
 module.exports = { logTable, logMessage };

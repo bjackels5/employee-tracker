@@ -1,23 +1,7 @@
-// Can I use this to show what just happened at the bottom of the screen? "Employee added", e.g.
-// var ui = new inquirer.ui.BottomBar();
-// ui.log.write('something just happened.');
-//
-// // pipe a Stream to the log zone
-// outputStream.pipe(ui.log);
-//
-// // Or simply write output
-// ui.log.write('something just happened.');
-// ui.log.write('Almost over, standby!');
-//
-// // During processing, update the bottom bar content to display a loader
-// // or output a progress bar, etc
-// ui.updateBottomBar('new bottom bar content');
-
-
 // const mysql = require('mysql2');
 const figlet = require('figlet');
 const inquirer = require('inquirer');
-const ui = new inquirer.ui.BottomBar();
+const { logMessage } = require('./utils/logUtils.js')
 
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment, getDepartmentNamesAndIds } = require('./db/departmentDB.js');
@@ -70,7 +54,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'firstName',
-        message: "Please enter the employee's first name:",
+        message: "Please enter the employee's first name: ",
         validate: theInput => validateInput(theInput, "The employee's first name is required."),
         when(answers) {
             return (answers.whatNext === cAddEmp);
@@ -79,7 +63,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'lastName',
-        message: "Please enter the employee's last name:",
+        message: "Please enter the employee's last name: ",
         validate: theInput => validateInput(theInput, "The employee's last name is required."),
         when(answers) {
             return (answers.whatNext === cAddEmp);
@@ -88,7 +72,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'deptName',
-        message: 'Please enter the name of the department:',
+        message: 'Please enter the name of the department: ',
         validate: theInput => validateInput(theInput, "The department name is required."),
         when(answers) {
             return (answers.whatNext === cAddDept);
@@ -97,7 +81,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'roleTitle',
-        message: 'Please enter the title of the role:',
+        message: 'Please enter the title of the role: ',
         validate: theInput => validateInput(theInput, "The role title is required."),
         when(answers) {
             return (answers.whatNext === cAddRole);
@@ -106,7 +90,7 @@ const whatNext = [
     {
         type: 'input',
         name: 'roleSalary',
-        message: "Please enter the role's salary",
+        message: "Please enter the role's salary: ",
         validate: theInput => validateInput(theInput, "The role salary is required."),
         when(answers) {
             return (answers.whatNext === cAddRole);
@@ -124,7 +108,7 @@ const promptAddEmployee = (firstName, lastName) => {
                     {
                         type: 'list',
                         name: 'role',
-                        message: `Please select a role for the employee:`,
+                        message: `Please select a role for the employee: `,
                         choices: roles
                     }
                 ];
@@ -138,7 +122,7 @@ const promptAddEmployee = (firstName, lastName) => {
                                     {
                                         type: 'list',
                                         name: 'manager',
-                                        message: `Please select a manager for the employee:`,
+                                        message: `Please select a manager for the employee: `,
                                         choices: managers
                                     }
                                 ];
@@ -163,7 +147,7 @@ const promptUpdateEmployeeRole = () => {
                     {
                         type: 'list',
                         name: 'employee',
-                        message: `Please select the employee to modify:`,
+                        message: `Please select the employee to modify: `,
                         choices: employees
                     }
                 ];
@@ -178,7 +162,7 @@ const promptUpdateEmployeeRole = () => {
                                     {
                                         type: 'list',
                                         name: 'role',
-                                        message: `Please select the employee's new role:`,
+                                        message: `Please select the employee's new role: `,
                                         choices: roles
                                     }
                                 ];
@@ -203,14 +187,14 @@ const promptUpdateEmployeeManager = () => {
                     {
                         type: 'list',
                         name: 'employee',
-                        message: `Please select the employee who has a new manager:`,
+                        message: `Please select the employee who has a new manager: `,
                         choices: employees
                     },
                     {
                         type: 'list',
                         name: 'manager',
                         // I would like to have this question say `"Who is ${name}'s new manager?`, but then I'd have to do nested prompts.
-                        message: `Please select the employee's new manager:`,
+                        message: `Please select the employee's new manager: `,
                         // I would like to remove the selected employee from the list, but then I'd have to do nested prompts.
                         choices: employees
                     }
@@ -237,7 +221,7 @@ const promptAddRole = (roleTitle, roleSalary) => {
                     {
                         type: 'list',
                         name: 'dept',
-                        message: `Please select a department for the role:`,
+                        message: `Please select a department for the role: `,
                         choices: departments
                     }
                 ];
@@ -260,7 +244,7 @@ const promptUser = () => {
                 case cVwEmps:
                     empDB.listAllEmployees(db)
                         .then(() => {
-                            ui.log.write('All employees have been listed.');
+                            logMessage('All employees have been listed.');
                             return promptUser();
                         })
 
@@ -268,79 +252,79 @@ const promptUser = () => {
                 case cVwEmpsDept:
                     empDB.listAllEmployeesByDepartment(db)
                         .then(() => {
-                            ui.log.write('All employees have been listed by department.');
+                            logMessage('All employees have been listed by department.');
                             return promptUser();
                         })
                     break;
                 case cVwEmpsRole:
                     empDB.listAllEmployeesByRole(db)
                         .then(() => {
-                            ui.log.write('All employees have been listed by role.');
+                            logMessage('All employees have been listed by role.');
                             return promptUser();
                         })
                     break;
                 case cVwEmpsMgr:
                     empDB.listAllEmployeesByManager(db)
                         .then(() => {
-                            ui.log.write('All employees have been listed by manager.');
+                            logMessage('All employees have been listed by manager.');
                             return promptUser();
                         })
                     break;
                 case cAddEmp:
                     promptAddEmployee(answer.firstName, answer.lastName)
                         .then(() => {
-                            ui.log.write('An employee has been added.');
+                            logMessage('An employee has been added.');
                             return promptUser();
                         });
                     break;
                 case cUpEmpRole:
                     promptUpdateEmployeeRole()
                         .then(() => {
-                            ui.log.write("An employee's role has been updated.");
+                            logMessage("An employee's role has been updated.");
                             return promptUser();
                         });
                     break;
                 case cUpEmpMgr:
                     promptUpdateEmployeeManager()
                         .then(() => {
-                            ui.log.write("An employee's manager has been updated.");
+                            logMessage("An employee's manager has been updated.");
                             return promptUser();
                         });
                     break;
                 case cVwDepts:
                     listAllDepartments(db)
                         .then(() => {
-                            ui.log.write("All departments have been listed.");
+                            logMessage("All departments have been listed.");
                             return promptUser();
                         });
                     break;
                 case cAddDept:
                     addADepartment(db, answer.deptName)
                         .then(() => {
-                            ui.log.write("A department has been added.");
+                            logMessage("A department has been added.");
                             return promptUser();
                         });
                     break;
                 case cVwRoles:
                     listAllRoles(db)
                         .then(() => {
-                            ui.log.write("All roles have been listed.");
+                            logMessage("All roles have been listed.");
                             return promptUser();
                         });
                     break;
                 case cAddRole:
                     promptAddRole(answer.roleTitle, answer.roleSalary)
                         .then(() => {
-                            ui.log.write("A roles has been added.");
+                            logMessage("A roles has been added.");
                             return promptUser();
                         });
                     break;
                 case cExit:
-                    ui.log.write("Thank you for using Employee Tracker. Have a great day!");
-                    return; // db.close();
+                    logMessage("Thank you for using Employee Tracker. Have a great day!");
+                    return;
                     break;
                 default:
-                    return db;
+                    return;
             }
         });
 };
@@ -350,7 +334,7 @@ db.connect(err => {
     console.log(figlet.textSync('Employee\n       Tracker', { horizontalLayout: 'fitted', verticalLayout: 'fitted' }));
     promptUser()
         .then(() => {
-            console.log("how do I exit out?");
+            // console.log("how do I exit out?");
         })
         .catch(err => {
             console.log(err);
