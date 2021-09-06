@@ -65,14 +65,19 @@ const getEmployeeNamesAndIds = db => {
     return runSql(db, sql);
 }
 
+const listEmployeeDetails = (db, employeeId) => {
+    return runSql(db, sqlAllEmps + ` WHERE emp.id =?`, employeeId);
+}
+
 module.exports = {
+    addAnEmployee,
     listAllEmployees,
     listAllEmployeesByDepartment,
     listAllEmployeesByManager,
     listAllEmployeesByRole,
-    addAnEmployee,
-    updateEmployeeRole,
-    updateEmployeeManager,
+    listEmployeeDetails,
+    getEmployeeNamesAndIds,
     removeAnEmployee,
-    getEmployeeNamesAndIds
+    updateEmployeeRole,
+    updateEmployeeManager
 };

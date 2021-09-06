@@ -5,6 +5,7 @@ const cTable = require('console.table');
 
 const logTable = rows => {
     const separator = '========================================================================================';
+    console.log(""); // make sure the message doesn't get appended to the current row in the console
     console.log(separator);
     console.table(rows);
     console.log(separator);

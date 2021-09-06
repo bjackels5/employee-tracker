@@ -13,6 +13,7 @@ cVwEmps = "View All Employees";
 cVwEmpsDept = "View All Employees By Department";
 cVwEmpsRole = "View All Employees By Role";
 cVwEmpsMgr = "View All Employees By Manager";
+cVwEmpDetail = "View Employee Detail";
 cUpEmpRole = "Update an Employee's Role";
 cUpEmpMgr = "Update an Employee's Manager";
 cAddEmp = "Add An Employee";
@@ -41,6 +42,7 @@ const whatNext = [
                     cVwEmpsDept,
                     cVwEmpsRole,
                     cVwEmpsMgr,
+                    cVwEmpDetail,
                     cAddEmp,
                     cUpEmpRole,
                     cUpEmpMgr,
@@ -224,6 +226,31 @@ const promptUpdateEmployeeManager = () => {
     });
 }
 
+const promptViewEmployeeDetail = () => {
+    return new Promise(function (resolve, reject) {
+        empDB.getEmployeeNamesAndIds(db)
+            .then(employees => {
+                const whichEmployee = [
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: `Please select an employee: `,
+                        choices: employees
+                    }
+                ];
+
+                inquirer.prompt(whichEmployee)
+                    .then(answer => {
+                        // the employee has been chosen
+                        empDB.listEmployeeDetails(db, answer.employee)
+                            .then(employee => {
+                                logTable(employee);
+                                resolve("Employee Details Displayed");
+                            })
+                    });
+            });
+    });
+}
 
 const promptAddRole = (roleTitle, roleSalary) => {
     return new Promise(function (resolve, reject) {
@@ -286,6 +313,13 @@ const promptUser = () => {
                             return promptUser();
                         })
                     break;
+                case cVwEmpDetail:
+                    promptViewEmployeeDetail()
+                        .then( () => {
+                            logMessage('Employee detail has been displayed');
+                            return promptUser();
+                        });
+                    break;    
                 case cAddEmp:
                     promptAddEmployee(answer.firstName, answer.lastName)
                         .then(() => {
