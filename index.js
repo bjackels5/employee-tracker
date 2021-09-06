@@ -44,6 +44,7 @@ const whatNext = [
                     cAddEmp,
                     cUpEmpRole,
                     cUpEmpMgr,
+                    cRmEmp,
                     cVwDepts,
                     cAddDept,
                     cVwRoles,
@@ -157,13 +158,40 @@ const promptUpdateEmployeeRole = () => {
                                 empDB.updateEmployeeRole(db, answer.employee, answer.role);
                                 resolve("Employee Role Updated");
                             });
-
-
                     });
             });
     });
 }
 
+const promptRemoveEmployee = () => {
+    return new Promise(function (resolve, reject) {
+        empDB.getEmployeeNamesAndIds(db)
+            .then(employees => {
+                employees.unshift( { name: "Cancel employee removal", value: 0 } );
+                const whichEmployee = [
+                        {
+                            type: 'list',
+                            name: 'employee',
+                            message: `Please select the employee to remove: `,
+                            choices: employees
+                        }
+                ];
+                inquirer.prompt(whichEmployee)
+                    .then(answer => {
+                        if (answer.employee !== 0) {
+                            // the employee has been chosen
+                            empDB.removeAnEmployee(db, answer.employee);
+                            logMessage('An employee has been removed.');
+                            resolve("Employee Removed");
+                        } else {
+                            // the user chose not to remove an employee
+                            logMessage('No employee has been removed.');
+                            resolve("No Employee Removed");
+                        }    
+                    });
+            });
+    });
+}
 
 const promptUpdateEmployeeManager = () => {
     return new Promise(function (resolve, reject) {
@@ -212,7 +240,7 @@ const promptAddRole = (roleTitle, roleSalary) => {
 
                 inquirer.prompt(whichDept)
                     .then(answer => {
-                        /* now that we have the role title and the department id, create the new role */
+                        // the user supplied a title and chose a department, so create the new role
                         addARole(db, roleTitle, roleSalary, answer.dept);
                         resolve(`Role ${roleTitle} Created`);
                     })
@@ -274,10 +302,16 @@ const promptUser = () => {
                     break;
                 case cUpEmpMgr:
                     promptUpdateEmployeeManager()
-                        .then(() => {
+                        .then( () => {
                             logMessage("An employee's manager has been updated.");
                             return promptUser();
                         });
+                    break;
+                case cRmEmp:
+                    promptRemoveEmployee()
+                    .then( () => {
+                        return promptUser();
+                    });
                     break;
                 case cVwDepts:
                     listAllDepartments(db)

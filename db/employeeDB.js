@@ -57,7 +57,7 @@ const updateEmployeeManager = (db, employeeId, newManagerId) => {
 
 const removeAnEmployee = (db, employeeId) => {
     const sql = `DELETE FROM employees WHERE id=?`;
-    return runSql(db, sql);
+    return runSql(db, sql, employeeId);
 }
 
 const getEmployeeNamesAndIds = db => {
