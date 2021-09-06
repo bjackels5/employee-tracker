@@ -157,8 +157,14 @@ const promptUpdateEmployeeRole = () => {
                         inquirer.prompt(whichEmployeeAndRole)
                             .then(answer => {
                                 // the employee and the role have both been chosen
-                                empDB.updateEmployeeRole(db, answer.employee, answer.role);
-                                resolve("Employee Role Updated");
+                                empDB.updateEmployeeRole(db, answer.employee, answer.role)
+                                .then( () => {
+                                    empDB.listEmployeeDetails(db, answer.employee)
+                                    .then( employee => {
+                                        logTable(employee);
+                                        resolve("Employee Role Updated");
+                                    })
+                                });
                             });
                     });
             });
@@ -219,8 +225,14 @@ const promptUpdateEmployeeManager = () => {
                 inquirer.prompt(whichEmpAndMgr)
                     .then(answer => {
                         // the employee and manager have been chosen
-                        empDB.updateEmployeeManager(db, answer.employee, answer.manager);
-                        resolve("Employee Manager Updated");
+                        empDB.updateEmployeeManager(db, answer.employee, answer.manager)
+                        .then( () => {
+                            empDB.listEmployeeDetails(db, answer.employee)
+                            .then( employee => {
+                                logTable(employee);
+                                resolve("Employee Manager Updated");
+                            })
+                        });
                     });
             });
     });
