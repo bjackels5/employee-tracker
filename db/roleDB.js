@@ -24,4 +24,9 @@ const getRoleTitlesAndIds = db => {
     return runSql(db, sql);
 }
 
-module.exports = { listAllRoles, addARole, getRoleTitlesAndIds };
+const removeARole = (db, roleId) => {
+    const sql = `DELETE FROM roles WHERE id=?`;
+    return runSql(db, sql, roleId);
+}
+
+module.exports = { listAllRoles, addARole, getRoleTitlesAndIds, removeARole };

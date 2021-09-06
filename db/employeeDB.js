@@ -12,9 +12,9 @@ const sqlAllEmps =
                         END
                         AS Manager
             FROM employees emp
-            JOIN roles
+            LEFT JOIN roles
             ON emp.role_id = roles.id
-            JOIN departments
+            LEFT JOIN departments
             ON roles.department_id = departments.id
             LEFT JOIN employees mgr
             ON emp.manager_id = mgr.id

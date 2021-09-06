@@ -4,7 +4,7 @@ const { logMessage, logTable } = require('./utils/logUtils.js')
 
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment, getDepartmentNamesAndIds, removeADepartment } = require('./db/departmentDB.js');
-const { listAllRoles, addARole, getRoleTitlesAndIds } = require('./db/roleDB.js');
+const { listAllRoles, addARole, getRoleTitlesAndIds, removeARole } = require('./db/roleDB.js');
 const empDB = require('./db/employeeDB.js');
 
 // These values get used for the menu choices, to determine if additional inquiries need to be made, and
@@ -20,7 +20,7 @@ cAddEmp = "Add An Employee"; // required
 cRmEmp = "Remove An Employee"; // bonus requirement
 cVwDepts = "View All Departments"; // required
 cAddDept = "Add A Department"; // required
-cRmDept = "Remove A Department"; // bonus requirement - NOT DONE YET
+cRmDept = "Remove A Department"; // bonus requirement
 cVwRoles = "View All Roles"; // required
 cAddRole = "Add A Role"; // required
 cRmRole = "Remove A Role"; // bonus requirement - NOT DONE YET
@@ -41,21 +41,22 @@ const whatNext = [
         type: 'list',
         name: 'whatNext',
         message: 'What do you want to do?',
-        choices: [  cVwEmps,
-                    cVwEmpsDept,
-                    cVwEmpsRole,
-                    cVwEmpsMgr,
-                    cVwEmpDetail,
-                    cAddEmp,
-                    cUpEmpRole,
-                    cUpEmpMgr,
-                    cRmEmp,
-                    cVwDepts,
-                    cAddDept,
-                    cRmDept,
-                    cVwRoles,
-                    cAddRole,
-                    cExit
+        choices: [cVwEmps,
+            cVwEmpsDept,
+            cVwEmpsRole,
+            cVwEmpsMgr,
+            cVwEmpDetail,
+            cAddEmp,
+            cUpEmpRole,
+            cUpEmpMgr,
+            cRmEmp,
+            cVwDepts,
+            cAddDept,
+            cRmDept,
+            cVwRoles,
+            cAddRole,
+            cRmRole,
+            cExit
         ]
     },
     {
@@ -162,13 +163,13 @@ const promptUpdateEmployeeRole = () => {
                             .then(answer => {
                                 // the employee and the role have both been chosen
                                 empDB.updateEmployeeRole(db, answer.employee, answer.role)
-                                .then( () => {
-                                    empDB.listEmployeeDetails(db, answer.employee)
-                                    .then( employee => {
-                                        logTable(employee);
-                                        resolve("Employee Role Updated");
-                                    })
-                                });
+                                    .then(() => {
+                                        empDB.listEmployeeDetails(db, answer.employee)
+                                            .then(employee => {
+                                                logTable(employee);
+                                                resolve("Employee Role Updated");
+                                            })
+                                    });
                             });
                     });
             });
@@ -179,14 +180,14 @@ const promptRemove = (namesAndIdsFcn, addFcn, elementType) => {
     return new Promise(function (resolve, reject) {
         namesAndIdsFcn(db)
             .then(options => {
-                options.unshift( { name: `Cancel ${elementType} removal`, value: 0 } );
+                options.unshift({ name: `Cancel ${elementType} removal`, value: 0 });
                 const whichElement = [
-                        {
-                            type: 'list',
-                            name: 'chosen',
-                            message: `Please select the ${elementType} to remove: `,
-                            choices: options
-                        }
+                    {
+                        type: 'list',
+                        name: 'chosen',
+                        message: `Please select the ${elementType} to remove: `,
+                        choices: options
+                    }
                 ];
                 inquirer.prompt(whichElement)
                     .then(answer => {
@@ -199,7 +200,7 @@ const promptRemove = (namesAndIdsFcn, addFcn, elementType) => {
                             // the user chose to cancel removal
                             logMessage(`No ${elementType} has been removed.`);
                             resolve(`No ${elementType} Removed`);
-                        }    
+                        }
                     });
             });
     });
@@ -230,13 +231,13 @@ const promptUpdateEmployeeManager = () => {
                     .then(answer => {
                         // the employee and manager have been chosen
                         empDB.updateEmployeeManager(db, answer.employee, answer.manager)
-                        .then( () => {
-                            empDB.listEmployeeDetails(db, answer.employee)
-                            .then( employee => {
-                                logTable(employee);
-                                resolve("Employee Manager Updated");
-                            })
-                        });
+                            .then(() => {
+                                empDB.listEmployeeDetails(db, answer.employee)
+                                    .then(employee => {
+                                        logTable(employee);
+                                        resolve("Employee Manager Updated");
+                                    })
+                            });
                     });
             });
     });
@@ -331,11 +332,11 @@ const promptUser = () => {
                     break;
                 case cVwEmpDetail:
                     promptViewEmployeeDetail()
-                        .then( () => {
+                        .then(() => {
                             logMessage('Employee detail has been displayed');
                             return promptUser();
                         });
-                    break;    
+                    break;
                 case cAddEmp:
                     promptAddEmployee(answer.firstName, answer.lastName)
                         .then(() => {
@@ -352,16 +353,16 @@ const promptUser = () => {
                     break;
                 case cUpEmpMgr:
                     promptUpdateEmployeeManager()
-                        .then( () => {
+                        .then(() => {
                             logMessage("An employee's manager has been updated.");
                             return promptUser();
                         });
                     break;
                 case cRmEmp:
                     promptRemove(empDB.getEmployeeNamesAndIds, empDB.removeAnEmployee, "employee")
-                    .then( () => {
-                        return promptUser();
-                    });
+                        .then(() => {
+                            return promptUser();
+                        });
                     break;
                 case cVwDepts:
                     listAllDepartments(db)
@@ -373,16 +374,16 @@ const promptUser = () => {
                     break;
                 case cAddDept:
                     addADepartment(db, answer.deptName)
-                        .then( () => {
+                        .then(() => {
                             logMessage("A department has been added.");
                             return promptUser();
                         });
                     break;
                 case cRmDept:
                     promptRemove(getDepartmentNamesAndIds, removeADepartment, "department")
-                    .then( () => {
-                        return promptUser();
-                    });
+                        .then(() => {
+                            return promptUser();
+                        });
                     break;
                 case cVwRoles:
                     listAllRoles(db)
@@ -396,6 +397,12 @@ const promptUser = () => {
                     promptAddRole(answer.roleTitle, answer.roleSalary)
                         .then(() => {
                             logMessage("A roles has been added.");
+                            return promptUser();
+                        });
+                    break;
+                case cRmRole:
+                    promptRemove(getRoleTitlesAndIds, removeARole, "role")
+                        .then(() => {
                             return promptUser();
                         });
                     break;
