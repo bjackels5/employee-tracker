@@ -46,24 +46,18 @@ const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {
 const updateEmployeeRole = (db, employeeId, newRoleId) => {
     const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
     const params = [newRoleId, employeeId];
-    db.query(sql, params, (err, rows) => {
-        if (err) throw err;
-    });
+    return runSql(db, sql, params);
 }
 
 const updateEmployeeManager = (db, employeeId, newManagerId) => {
     const sql = `UPDATE employees SET manager_id = ? WHERE id = ?`;
     params = [newManagerId, employeeId];
-    db.query(sql, params, (err, rows) => {
-        if (err) throw err;
-    });
+    return runSql(db, sql, params);
 }
 
 const removeAnEmployee = (db, employeeId) => {
     const sql = `DELETE FROM employees WHERE id=?`;
-    db.query(sql, employeeId, (err, rows) => {
-        if (err) throw err;
-    })
+    return runSql(db, sql);
 }
 
 const getEmployeeNamesAndIds = db => {
