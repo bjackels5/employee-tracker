@@ -113,6 +113,7 @@ const promptAddEmployee = (firstName, lastName) => {
             .then(roles => {
                 empDB.getEmployeeNamesAndIds(db)
                     .then(managers => {
+                        managers.unshift({ name: `No manager`, value: null });
                         const whichRoleAndManager = [
                             {
                                 type: 'list',
