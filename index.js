@@ -212,6 +212,8 @@ const promptUpdateEmployeeManager = () => {
     return new Promise(function (resolve, reject) {
         empDB.getEmployeeNamesAndIds(db)
             .then(employees => {
+                let managers = employees.slice();
+                managers.unshift({ name: `No manager`, value: null });
                 const whichEmpAndMgr = [
                     {
                         type: 'list',
@@ -225,7 +227,7 @@ const promptUpdateEmployeeManager = () => {
                         message: `Please select the employee's new manager: `,
                         // I would like to remove the selected employee from the list of potential managers, but then I'd have to do nested prompts.
                         // Besides, there might be some people who really are there own managers! Yearly reviews would be crazy.
-                        choices: employees
+                        choices: managers
                     }
                 ];
 
