@@ -1,13 +1,14 @@
-// const mysql = require('mysql2');
-const figlet = require('figlet');
+const figlet = require('figlet'); // used to display the banner when the app starts
 const inquirer = require('inquirer');
-const { logMessage } = require('./utils/logUtils.js')
+const { logMessage, logTable } = require('./utils/logUtils.js')
 
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment, getDepartmentNamesAndIds } = require('./db/departmentDB.js');
 const { listAllRoles, addARole, getRoleTitlesAndIds } = require('./db/roleDB.js');
 const empDB = require('./db/employeeDB.js');
 
+// These values get used for the menu choices, to determine if additional inquiries need to be made, and
+// for the switch after the choices is made, Much safer to have these as constants than to type/typo them more than once.
 cVwEmps = "View All Employees";
 cVwEmpsDept = "View All Employees By Department";
 cVwEmpsRole = "View All Employees By Role";
@@ -31,24 +32,23 @@ const validateInput = (str, message) => {
     }
 };
 
-
 const whatNext = [
     {
         type: 'list',
         name: 'whatNext',
         message: 'What do you want to do?',
-        choices: [cVwEmps,
-            cVwEmpsDept,
-            cVwEmpsRole,
-            cVwEmpsMgr,
-            cAddEmp,
-            cUpEmpRole,
-            cUpEmpMgr,
-            cVwDepts,
-            cAddDept,
-            cVwRoles,
-            cAddRole,
-            cExit
+        choices: [  cVwEmps,
+                    cVwEmpsDept,
+                    cVwEmpsRole,
+                    cVwEmpsMgr,
+                    cAddEmp,
+                    cUpEmpRole,
+                    cUpEmpMgr,
+                    cVwDepts,
+                    cAddDept,
+                    cVwRoles,
+                    cAddRole,
+                    cExit
         ]
     },
     {
@@ -96,7 +96,6 @@ const whatNext = [
             return (answers.whatNext === cAddRole);
         },
     }
-
 ];
 
 
@@ -131,7 +130,6 @@ const promptAddEmployee = (firstName, lastName) => {
             });
     });
 }
-
 
 const promptUpdateEmployeeRole = () => {
     return new Promise(function (resolve, reject) {
@@ -181,9 +179,9 @@ const promptUpdateEmployeeManager = () => {
                     {
                         type: 'list',
                         name: 'manager',
-                        // I would like to have this question say `"Who is ${name}'s new manager?`, but then I'd have to do nested prompts.
                         message: `Please select the employee's new manager: `,
-                        // I would like to remove the selected employee from the list, but then I'd have to do nested prompts.
+                        // I would like to remove the selected employee from the list of potential managers, but then I'd have to do nested prompts.
+                        // Besides, there might be some people who really are there own managers! Yearly reviews would be crazy.
                         choices: employees
                     }
                 ];
@@ -191,8 +189,6 @@ const promptUpdateEmployeeManager = () => {
                 inquirer.prompt(whichEmpAndMgr)
                     .then(answer => {
                         // the employee and manager have been chosen
-                        empName = employees.filter(emp => emp.value === answer.employee)[0].name;
-                        mgrName = employees.filter(emp => emp.value === answer.manager)[0].name;
                         empDB.updateEmployeeManager(db, answer.employee, answer.manager);
                         resolve("Employee Manager Updated");
                     });
@@ -231,7 +227,8 @@ const promptUser = () => {
             switch (answer.whatNext) {
                 case cVwEmps:
                     empDB.listAllEmployees(db)
-                        .then(() => {
+                        .then(employees => {
+                            logTable(employees);
                             logMessage('All employees have been listed.');
                             return promptUser();
                         })
@@ -239,21 +236,24 @@ const promptUser = () => {
                     break;
                 case cVwEmpsDept:
                     empDB.listAllEmployeesByDepartment(db)
-                        .then(() => {
+                        .then(employees => {
+                            logTable(employees);
                             logMessage('All employees have been listed by department.');
                             return promptUser();
                         })
                     break;
                 case cVwEmpsRole:
                     empDB.listAllEmployeesByRole(db)
-                        .then(() => {
+                        .then(employees => {
+                            logTable(employees);
                             logMessage('All employees have been listed by role.');
                             return promptUser();
                         })
                     break;
                 case cVwEmpsMgr:
                     empDB.listAllEmployeesByManager(db)
-                        .then(() => {
+                        .then(employees => {
+                            logTable(employees);
                             logMessage('All employees have been listed by manager.');
                             return promptUser();
                         })
@@ -281,21 +281,23 @@ const promptUser = () => {
                     break;
                 case cVwDepts:
                     listAllDepartments(db)
-                        .then(() => {
+                        .then(departments => {
+                            logTable(departments)
                             logMessage("All departments have been listed.");
                             return promptUser();
                         });
                     break;
                 case cAddDept:
                     addADepartment(db, answer.deptName)
-                        .then(() => {
+                        .then( () => {
                             logMessage("A department has been added.");
                             return promptUser();
                         });
                     break;
                 case cVwRoles:
                     listAllRoles(db)
-                        .then(() => {
+                        .then(roles => {
+                            logTable(roles);
                             logMessage("All roles have been listed.");
                             return promptUser();
                         });

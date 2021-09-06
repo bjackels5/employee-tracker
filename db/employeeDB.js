@@ -1,8 +1,7 @@
-const { logTable } = require('../utils/logUtils.js');
 const runSql = require('./dbutils.js');
 
-const sqlAllEmps = () => {
-    return `SELECT  CONCAT(emp.first_name, ' ', emp.last_name) AS Name,
+const sqlAllEmps =
+    `SELECT CONCAT(emp.first_name, ' ', emp.last_name) AS Name,
                     roles.title AS Title,
                     departments.name AS Department,
                     CONCAT('$', FORMAT(roles.salary, 'D')) AS Salary,
@@ -20,27 +19,21 @@ const sqlAllEmps = () => {
             LEFT JOIN employees mgr
             ON emp.manager_id = mgr.id
             `;
-}
 
 const listAllEmployees = (db, sqlAdd = '') => {
-    const sql = sqlAllEmps() + sqlAdd;
-
-    return runSql(db, sql)
-    .then(employees => {
-        logTable(employees);
-    })
+    return runSql(db, sqlAllEmps);
 }
 
 const listAllEmployeesByDepartment = db => {
-    return listAllEmployees(db, ` ORDER BY roles.department_id`);
+    return runSql(db, sqlAllEmps + ` ORDER BY roles.department_id`);
 }
 
 const listAllEmployeesByManager = db => {
-    return listAllEmployees(db, ` ORDER BY emp.manager_id`);
+    return runSql(db, sqlAllEmps + ` ORDER BY emp.manager_id`);
 }
 
 const listAllEmployeesByRole = db => {
-    return listAllEmployees(db, ` ORDER BY emp.role_id`);
+    return runSql(db, sqlAllEmps + ` ORDER BY emp.role_id`);
 }
 
 const addAnEmployee = (db, firstName, lastName, roleId, managerId) => {

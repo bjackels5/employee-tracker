@@ -1,4 +1,3 @@
-const { logTable, logMessage } = require('../utils/logUtils.js');
 const runSql = require('./dbutils.js');
 
 const listAllRoles = db => {
@@ -10,10 +9,7 @@ const listAllRoles = db => {
                 JOIN departments
                 ON roles.department_id = departments.id`;
 
-    return runSql(db, sql)
-    .then(roles => {
-        logTable(roles);
-    });
+    return runSql(db, sql);
 }
 
 const addARole = (db, title, salary, department_id) => {
