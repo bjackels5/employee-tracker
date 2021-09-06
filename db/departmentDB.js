@@ -5,6 +5,18 @@ const listAllDepartments = db => {
     return runSql(db, sql);
 }
 
+const listAllDepartmentBudgets = db => {
+    const sql = `SELECT departments.name AS Department, 
+                CONCAT('$', FORMAT(SUM(roles.salary), 'D')) AS Budget
+                FROM employees emp
+                JOIN roles
+                ON emp.role_id = roles.id
+                JOIN departments
+                ON roles.department_id = departments.id
+                GROUP BY departments.id`;
+    return runSql(db, sql);
+}
+
 const addADepartment = (db, name) => {
     let sql = `INSERT INTO departments (name) VALUES (?)`;
     return runSql(db, sql, name);
@@ -20,11 +32,9 @@ const removeADepartment = (db, deptId) => {
     return runSql(db, sql, deptId);
 }
 
-
-
-
 module.exports = {  listAllDepartments,
                     addADepartment,
                     getDepartmentNamesAndIds,
-                    removeADepartment
+                    removeADepartment,
+                    listAllDepartmentBudgets
                 };

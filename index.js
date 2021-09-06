@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const { logMessage, logTable } = require('./utils/logUtils.js')
 
 const db = require('./db/connection');
-const { listAllDepartments, addADepartment, getDepartmentNamesAndIds, removeADepartment } = require('./db/departmentDB.js');
+const { listAllDepartments, addADepartment, getDepartmentNamesAndIds, removeADepartment, listAllDepartmentBudgets } = require('./db/departmentDB.js');
 const { listAllRoles, addARole, getRoleTitlesAndIds, removeARole } = require('./db/roleDB.js');
 const empDB = require('./db/employeeDB.js');
 
@@ -23,8 +23,8 @@ cAddDept = "Add A Department"; // required
 cRmDept = "Remove A Department"; // bonus requirement
 cVwRoles = "View All Roles"; // required
 cAddRole = "Add A Role"; // required
-cRmRole = "Remove A Role"; // bonus requirement - NOT DONE YET
-cVwDeptBudget = "View Departmet Budget"; // bonus requirement - NOT DONE YET
+cRmRole = "Remove A Role"; // bonus requirement
+cVwDeptBudget = "View Department Budgets"; // bonus requirement
 cExit = "Exit";
 
 const validateInput = (str, message) => {
@@ -51,6 +51,7 @@ const whatNext = [
             cUpEmpMgr,
             cRmEmp,
             cVwDepts,
+            cVwDeptBudget,
             cAddDept,
             cRmDept,
             cVwRoles,
@@ -370,6 +371,14 @@ const promptUser = () => {
                         .then(departments => {
                             logTable(departments)
                             logMessage("All departments have been listed.");
+                            return promptUser();
+                        });
+                    break;
+                case cVwDeptBudget:
+                    listAllDepartmentBudgets(db)
+                        .then(budgets => {
+                            logTable(budgets)
+                            logMessage("All department budgets have been listed.");
                             return promptUser();
                         });
                     break;

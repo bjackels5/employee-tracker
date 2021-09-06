@@ -76,10 +76,10 @@ This challenge for Module 12 of the Coding Bootcamp is to create an app to track
 * View employees by manager. ✔️
 * View employees by department. ✔️
 * Delete:
-    * departments
-    * roles
+    * departments ✔️
+    * roles ✔️
     * employees ✔️
-* View the total utilized budget of a department—in other words, the combined salaries of all employees in that department.
+* View the total utilized budget of a department—in other words, the combined salaries of all employees in that department. ✔️
 
 ---
 
