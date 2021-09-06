@@ -3,25 +3,28 @@ const inquirer = require('inquirer');
 const { logMessage, logTable } = require('./utils/logUtils.js')
 
 const db = require('./db/connection');
-const { listAllDepartments, addADepartment, getDepartmentNamesAndIds } = require('./db/departmentDB.js');
+const { listAllDepartments, addADepartment, getDepartmentNamesAndIds, removeADepartment } = require('./db/departmentDB.js');
 const { listAllRoles, addARole, getRoleTitlesAndIds } = require('./db/roleDB.js');
 const empDB = require('./db/employeeDB.js');
 
 // These values get used for the menu choices, to determine if additional inquiries need to be made, and
 // for the switch after the choices is made, Much safer to have these as constants than to type/typo them more than once.
-cVwEmps = "View All Employees";
-cVwEmpsDept = "View All Employees By Department";
-cVwEmpsRole = "View All Employees By Role";
-cVwEmpsMgr = "View All Employees By Manager";
-cVwEmpDetail = "View Employee Detail";
-cUpEmpRole = "Update an Employee's Role";
-cUpEmpMgr = "Update an Employee's Manager";
-cAddEmp = "Add An Employee";
-cRmEmp = "Remove An Employee";
-cVwDepts = "View All Departments";
-cAddDept = "Add A Department";
-cVwRoles = "View All Roles";
-cAddRole = "Add A Role";
+cVwEmps = "View All Employees"; // required
+cVwEmpsDept = "View All Employees By Department"; // bonus requirement
+cVwEmpsRole = "View All Employees By Role"; // not required - I just wanted it
+cVwEmpsMgr = "View All Employees By Manager"; // bonus requirement
+cVwEmpDetail = "View Employee Detail"; // not required - I just wanted it
+cUpEmpRole = "Update an Employee's Role"; // required
+cUpEmpMgr = "Update an Employee's Manager"; // bonus requirement
+cAddEmp = "Add An Employee"; // required
+cRmEmp = "Remove An Employee"; // bonus requirement
+cVwDepts = "View All Departments"; // required
+cAddDept = "Add A Department"; // required
+cRmDept = "Remove A Department"; // bonus requirement - NOT DONE YET
+cVwRoles = "View All Roles"; // required
+cAddRole = "Add A Role"; // required
+cRmRole = "Remove A Role"; // bonus requirement - NOT DONE YET
+cVwDeptBudget = "View Departmet Budget"; // bonus requirement - NOT DONE YET
 cExit = "Exit";
 
 const validateInput = (str, message) => {
@@ -49,6 +52,7 @@ const whatNext = [
                     cRmEmp,
                     cVwDepts,
                     cAddDept,
+                    cRmDept,
                     cVwRoles,
                     cAddRole,
                     cExit
@@ -171,30 +175,30 @@ const promptUpdateEmployeeRole = () => {
     });
 }
 
-const promptRemoveEmployee = () => {
+const promptRemove = (namesAndIdsFcn, addFcn, elementType) => {
     return new Promise(function (resolve, reject) {
-        empDB.getEmployeeNamesAndIds(db)
-            .then(employees => {
-                employees.unshift( { name: "Cancel employee removal", value: 0 } );
-                const whichEmployee = [
+        namesAndIdsFcn(db)
+            .then(options => {
+                options.unshift( { name: `Cancel ${elementType} removal`, value: 0 } );
+                const whichElement = [
                         {
                             type: 'list',
-                            name: 'employee',
-                            message: `Please select the employee to remove: `,
-                            choices: employees
+                            name: 'chosen',
+                            message: `Please select the ${elementType} to remove: `,
+                            choices: options
                         }
                 ];
-                inquirer.prompt(whichEmployee)
+                inquirer.prompt(whichElement)
                     .then(answer => {
-                        if (answer.employee !== 0) {
-                            // the employee has been chosen
-                            empDB.removeAnEmployee(db, answer.employee);
-                            logMessage('An employee has been removed.');
-                            resolve("Employee Removed");
+                        if (answer.chosen !== 0) {
+                            // a choice has been made
+                            addFcn(db, answer.chosen);
+                            logMessage(`An ${elementType} has been removed.`);
+                            resolve(`${elementType} Removed`);
                         } else {
-                            // the user chose not to remove an employee
-                            logMessage('No employee has been removed.');
-                            resolve("No Employee Removed");
+                            // the user chose to cancel removal
+                            logMessage(`No ${elementType} has been removed.`);
+                            resolve(`No ${elementType} Removed`);
                         }    
                     });
             });
@@ -354,7 +358,7 @@ const promptUser = () => {
                         });
                     break;
                 case cRmEmp:
-                    promptRemoveEmployee()
+                    promptRemove(empDB.getEmployeeNamesAndIds, empDB.removeAnEmployee, "employee")
                     .then( () => {
                         return promptUser();
                     });
@@ -373,6 +377,12 @@ const promptUser = () => {
                             logMessage("A department has been added.");
                             return promptUser();
                         });
+                    break;
+                case cRmDept:
+                    promptRemove(getDepartmentNamesAndIds, removeADepartment, "department")
+                    .then( () => {
+                        return promptUser();
+                    });
                     break;
                 case cVwRoles:
                     listAllRoles(db)

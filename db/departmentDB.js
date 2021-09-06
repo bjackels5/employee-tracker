@@ -15,5 +15,16 @@ const getDepartmentNamesAndIds = (db) => {
     return runSql(db, sql);
 }
 
+const removeADepartment = (db, deptId) => {
+    const sql = `DELETE FROM departments WHERE id=?`;
+    return runSql(db, sql, deptId);
+}
 
-module.exports = { listAllDepartments, addADepartment, getDepartmentNamesAndIds };
+
+
+
+module.exports = {  listAllDepartments,
+                    addADepartment,
+                    getDepartmentNamesAndIds,
+                    removeADepartment
+                };
