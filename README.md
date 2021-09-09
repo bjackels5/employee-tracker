@@ -126,7 +126,7 @@ This challenge for Module 12 of the Coding Bootcamp is to create an app to track
 
 <a id="projectDemo"></a>
 
-<a href="https://youtu.be/VKHzy5MNtBE" target="blank">
+<a href="https://youtu.be/VKHzy5MNtBE" target="_blank">
    <img src="./media/employee-tracker-demo.png" width="500">
 </a>
 
