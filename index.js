@@ -1,7 +1,7 @@
 const figlet = require('figlet'); // used to display the banner when the app starts
 const inquirer = require('inquirer');
-const { logMessage, logTable } = require('./utils/logUtils.js')
 
+const { logMessage, logTable, logSep } = require('./utils/logUtils.js')
 const db = require('./db/connection');
 const { listAllDepartments, addADepartment, getDepartmentNamesAndIds, removeADepartment, listAllDepartmentBudgets } = require('./db/departmentDB.js');
 const { listAllRoles, addARole, getRoleTitlesAndIds, removeARole } = require('./db/roleDB.js');
@@ -196,7 +196,7 @@ const promptRemove = (namesAndIdsFcn, addFcn, elementType) => {
                         if (answer.chosen !== 0) {
                             // a choice has been made
                             addFcn(db, answer.chosen);
-                            logMessage(`An ${elementType} has been removed.`);
+                            logMessage(`One ${elementType} has been removed.`);
                             resolve(`${elementType} Removed`);
                         } else {
                             // the user chose to cancel removal
@@ -419,7 +419,10 @@ const promptUser = () => {
                         });
                     break;
                 case cExit:
-                    logMessage("Thank you for using Employee Tracker. Have a great day!");
+                    logSep();
+                    logMessage("           Thank you for using Employee Tracker. Have a great day!          ");
+                    logSep();
+                    process.exit();
                     return;
                     break;
                 default:

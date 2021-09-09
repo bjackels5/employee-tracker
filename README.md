@@ -118,7 +118,7 @@ This challenge for Module 12 of the Coding Bootcamp is to create an app to track
 <a id="webImage"></a>
 ## Employee Tracker Screenshot
 
-![Employee Tracker](./media/employee-tracker.png)
+<img src="./media/employee-tracker-screenshot.png" width="500">
 
 ---
 
@@ -126,8 +126,8 @@ This challenge for Module 12 of the Coding Bootcamp is to create an app to track
 
 <a id="projectDemo"></a>
 
-<a href="https://youtu.be/TRyEJ-cYpcg">
-   <img src="./media/employee-tracker-demo.png">
+<a href="https://youtu.be/VKHzy5MNtBE">
+   <img src="./media/employee-tracker-demo.png" width="500">
 </a>
 
 ---

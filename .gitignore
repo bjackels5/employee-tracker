@@ -1,3 +1,6 @@
+misc
+bjackels5-module12-employee-tracker.mp4
+
 # Logs
 logs
 *.log
@@ -27,9 +30,6 @@ coverage
 
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
-misc
-
-
 
 # Bower dependency directory (https://bower.io/)
 bower_components
